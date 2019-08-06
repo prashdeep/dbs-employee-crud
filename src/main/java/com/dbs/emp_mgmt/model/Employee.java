@@ -3,7 +3,9 @@ package com.dbs.emp_mgmt.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "Employee")
@@ -22,15 +24,29 @@ public class Employee implements Serializable, Comparable<Employee> {
     @Column(name = "department_name")
     private String departmentName;
 
-    public Employee(){}
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<BankAccount> bankAccountSet = new HashSet<>();
 
-    public Employee( String name, LocalDate dateOfBirth, String departmentName) {
+
+    public Employee() {
+    }
+
+    public Employee(String name, LocalDate dateOfBirth, String departmentName) {
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.departmentName = departmentName;
     }
 
-    public void setId(long id ){
+
+    public Set<BankAccount> getBankAccountSet() {
+        return bankAccountSet;
+    }
+
+    public void setBankAccountSet(Set<BankAccount> bankAccountSet) {
+        this.bankAccountSet = bankAccountSet;
+    }
+
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -62,6 +78,11 @@ public class Employee implements Serializable, Comparable<Employee> {
         this.departmentName = departmentName;
     }
 
+    public void addBankAccount(BankAccount bankAccount){
+        this.bankAccountSet.add(bankAccount);
+        bankAccount.setEmployee(this);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -80,7 +101,7 @@ public class Employee implements Serializable, Comparable<Employee> {
 
     @Override
     public int compareTo(Employee employee) {
-        return (int)(this.id - employee.id);
+        return (int) (this.id - employee.id);
     }
 
     @Override
