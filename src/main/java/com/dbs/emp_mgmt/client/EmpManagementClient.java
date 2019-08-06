@@ -32,12 +32,12 @@ public class EmpManagementClient {
     private static void saveEmployees(){
         Employee employee = new Employee("Harish", LocalDate.of(1985,5, 25), "HR");
         BankAccount account1 = new BankAccount();
-        account1.setPan("AOY45GG88M");
+        account1.setPan("AOY45G88M");
         account1.setAccountBalance(5_000);
         BankAccount account2 = new BankAccount();
         account2.setPan("AOY45GG88M");
         account2.setAccountBalance(15_000);
-
+    
         employee.addBankAccount(account1);
         employee.addBankAccount(account2);
 
