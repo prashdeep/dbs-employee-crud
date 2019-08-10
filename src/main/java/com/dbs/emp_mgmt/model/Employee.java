@@ -11,11 +11,13 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Employee")
-@Data
 public class Employee implements Serializable, Comparable<Employee> {
+
+    public Employee(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="EMPLOYEE_ID")
     private long id;
 
     @Column(name = "emp_name")
@@ -30,8 +32,39 @@ public class Employee implements Serializable, Comparable<Employee> {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<BankAccount> bankAccountSet = new HashSet<>();
+    
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(name = "EMPLOYEE_COLLEAGE",
+                joinColumns={@JoinColumn(name="EMPLOYEE_ID")},
+                inverseJoinColumns = {@JoinColumn(name="COLLEAGE_ID")} 
+              )
+    private Set<Employee> colleagues = new HashSet<>();
+
+    @ManyToMany(mappedBy = "colleagues")
+    private Set<Employee> teamMates = new HashSet<>();
+
+    public Set<Employee> getColleagues() {
+        return colleagues;
+    }
+
+    public void setColleagues(Set<Employee> colleagues) {
+        this.colleagues = colleagues;
+    }
+
+
+    public void addColleague(Employee colleague){
+        colleague.getTeamMates().add(this);
+        this.getColleagues().add(colleague);
+    }
+    public Set<Employee> getTeamMates() {
+        return teamMates;
+    }
+
+    public void setTeamMates(Set<Employee> teamMates) {
+        this.teamMates = teamMates;
+    }
 
     public Employee(String name, LocalDate dateOfBirth, String departmentName) {
         this.name = name;
@@ -48,4 +81,66 @@ public class Employee implements Serializable, Comparable<Employee> {
         return (int) (this.id - employee.id);
     }
 
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getDepartmentName() {
+        return departmentName;
+    }
+
+    public void setDepartmentName(String departmentName) {
+        this.departmentName = departmentName;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public Set<BankAccount> getBankAccountSet() {
+        return bankAccountSet;
+    }
+
+    public void setBankAccountSet(Set<BankAccount> bankAccountSet) {
+        this.bankAccountSet = bankAccountSet;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return id == employee.id &&
+                Objects.equals(dateOfBirth, employee.dateOfBirth);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, dateOfBirth);
+    }
 }

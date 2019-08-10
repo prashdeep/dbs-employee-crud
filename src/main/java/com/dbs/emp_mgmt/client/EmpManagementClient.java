@@ -16,7 +16,7 @@ public class EmpManagementClient {
         ApplicationContext applicationContext = new ClassPathXmlApplicationContext("application-context.xml");
         employeeController = applicationContext.getBean(EmployeeController.class);
         saveEmployees();
-        //listAllEmployees();
+        listAllEmployees();
        // fetchEmployeeDetailsById(12);
     }
 
@@ -51,6 +51,12 @@ public class EmpManagementClient {
 
         employee.setAddress(address);
         address.setEmployee(employee);
+
+        Employee namita = new Employee("Namita", LocalDate.of(1985,5, 25), "HR");
+        Employee vishnuPrakash = new Employee("VishnuPrakash", LocalDate.of(1985,5, 25), "HR");
+
+        employee.addColleague(namita);
+        employee.addColleague(vishnuPrakash);
 
         employeeController.saveEmployee(employee);
        // employee = new Employee("VInayak", LocalDate.of(1985,6, 18), "Payroll");
